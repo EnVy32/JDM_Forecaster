@@ -1,37 +1,47 @@
-import pandas as pd 
+import pandas as pd
 from sklearn.model_selection import train_test_split
+# NEW IMPORT: The Heavy Artillery
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.metrics import mean_absolute_error, r2_score
 
 def split_data(df):
     """
     Splits the DataFrame into features (X) and target (y),
-    and then into training and testing sets
-
-    Args: 
-        df (pd.DataFrame): The Full, encoded dataset.
-
-    Returns
-        tuple: X_train, X_test, y_train, y_test
+    and then into training and testing sets.
     """
-
-    print("---DATA SPLITTING---")
-
-    #Define target (y) and features (X)
-    target_columns = 'price'
-
-    #X contains everything except the price
-    X = df.drop(columns=[target_columns])
-    #y contains only the price
-    y = df[target_columns]
-
-    print(f"Target (y): {target_columns}")
-    print(f"Features (X): {list(X.columns)}")
-
-    #Split into train and test sets
-    #test_size = 0.2 -> 20% of data goes to the 'Exam' (Test set)
-    #random state = 42 -> Ensures the split is indentical every time we run the code
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, random_state= 42)
-
-    print(f"Training set size: {len(X_train)} rows (80%)")
-    print(f"Testing set size: {len(X_train)} rows (20%)")
-
+    print("--- DATA SPLITTING ---")
+    target_column = 'price'
+    
+    X = df.drop(columns=[target_column])
+    y = df[target_column]
+    
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+    
     return X_train, X_test, y_train, y_test
+
+def train_model(X_train, y_train):
+    """
+    Initializes and trains the Random Forest Regressor.
+    """
+    print("--- TRAINING MODEL (Random Forest) ---")
+    
+    # n_estimators=100 -> We create 100 trees (the "Forest")
+    # random_state=42  -> Ensures reproducible results
+    model = RandomForestRegressor(n_estimators=100, random_state=42)
+    
+    # The syntax is identical to LinearRegression!
+    model.fit(X_train, y_train)
+    
+    print("--> Model trained successfully.")
+    return model
+
+def evaluate_model(model, X_test, y_test):
+    """
+    Predicts on the test set and calculates performance metrics.
+    """
+    predictions = model.predict(X_test)
+    
+    mae = mean_absolute_error(y_test, predictions)
+    r2 = r2_score(y_test, predictions)
+    
+    return mae, r2, predictions

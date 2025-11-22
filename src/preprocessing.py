@@ -67,3 +67,28 @@ def encode_categorical_features(df):
     print(f"New total columns: {len(df_encoded.columns)}")
     
     return df_encoded
+
+def remove_outliers(df):
+    """
+    Removes rows with unrealistic values (outliers) to improve model quality.
+    Rules:
+    1.Price > 200 (200 000 JPY) - removes junk cars/down payments.
+    2.Engine Capacity between 600cc and 4000cc - removes data entry errors
+    """
+
+    print("---REMOVING OUTLIERS---")
+    initial_count = len(df)
+
+    #Rule1: Price > 200
+    df = df[df['price'] > 200]
+
+    #Rule2: Engine Capacity 600cc - 4000cc
+    df = df[df['engine_capacity'].between(600, 4000)]
+
+    final_count = len(df)
+    dropped_count = initial_count - final_count
+    
+    print(f"Rows retained: {final_count}")
+    print(f"Outliers dropped: {dropped_count}")
+
+    return df
