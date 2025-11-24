@@ -3,11 +3,20 @@ import pandas as pd
 def clean_price_data(df):
     """
     Basic technical cleaning:
-    1. Removes rows with missing price.
-    2. Removes the redundant 'Unnamed: 0' column if present.
+    1. Drop Duplicates based on unique 'link' (Prevents the copy issue).
+    2. Removes rows with missing price.
+    3. Removes the redundant 'Unnamed: 0' column if present.
     """
     initial_count = len(df)
     
+    # STEP 0: Drop Duplicates (The Fix)
+    if 'link' in df.columns:
+        # We keep the 'first' occurrence and drop subsequent duplicates
+        df.drop_duplicates(subset=['link'], keep='first', inplace=True)
+    else:
+        # Fallback if no link column exists
+        df.drop_duplicates(inplace=True)
+        
     # STEP 1: Remove rows where price is NaN
     df.dropna(subset=['price'], inplace=True)
     
@@ -19,7 +28,7 @@ def clean_price_data(df):
     print(f"--- CLEANING REPORT ---")
     print(f"Rows before: {initial_count}")
     print(f"Rows after:  {final_count}")
-    print(f"Dropped:     {initial_count - final_count} rows without price")
+    print(f"Dropped:     {initial_count - final_count} rows (duplicates/empty)")
 
     return df
 
