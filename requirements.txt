@@ -8,3 +8,7 @@ seaborn
 beautifulsoup4
 aiohttp
 joblib
+plotly
+streamlit-lottie
+requests
+statsmodels
