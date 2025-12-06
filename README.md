@@ -39,7 +39,7 @@ It connects directly to live Japanese export markets (e.g., TC-V), ingests thous
 
 ---
 
-## 🚀 Installation & Setup
+## 🚀 Installation & Setup (not working at the moment)
 
 Follow these steps to deploy ReXie7 on your local machine.
 
